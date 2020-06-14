@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts
-{
+namespace Assets.Scripts {
     [System.Serializable]
-    public enum GameState
-    {
+    public enum GameState {
 
         MainMenu,
         InGame,
