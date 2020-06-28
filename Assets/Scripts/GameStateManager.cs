@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Assets.Scripts {
 
@@ -9,9 +11,42 @@ namespace Assets.Scripts {
         /// </summary>
         public GameState gameState;
 
-        public Material circleMat;
+        public GameObject TicTacTileObject;
         
-        
+        /// <summary>
+        /// Contains the shapes placed by the player
+        /// </summary>
+        public TicTacShape[][] board = new TicTacShape[3][];
+
+        /// <summary>
+        /// Holds a reference to the tictacttoe object
+        /// </summary>
+        public GameObject[][] boardObjects = new GameObject[3][];
+
+        void Start() {
+
+            GameObject parent = new GameObject("Board");
+
+            // Populate the board
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+
+                    if (j == 0) {
+                        board[i] = new TicTacShape[3];
+                        boardObjects[i] = new GameObject[3];
+                    }
+
+                    // Set up the board
+                    board[i][j] = TicTacShape.Empty;
+                    boardObjects[i][j] = Instantiate(TicTacTileObject, new Vector3(i, 0, j), Quaternion.Euler(90, 0, 0));
+                    boardObjects[i][j].transform.parent = parent.transform;
+                    boardObjects[i][j].gameObject.name = $"{i}-{j}";
+                    
+                    // Offset this by 1 to make sure the center tile is in the middle of the camera
+                    boardObjects[i][j].transform.position = new Vector3(i - 1, 0, j - 1);
+                }
+            }
+        }
         
         /// <summary>
         /// Called every frame
@@ -39,7 +74,7 @@ namespace Assets.Scripts {
                         Material[] mats = _quadMeshRenderer.materials;
                         
                         // Set the first material to the circle material
-                        mats[0] = circleMat;
+                        //mats[0] = circleMat;
 
                         // Update the mesh renderer's material array
                         // We can't modify the material array directly, at least that's what Trigary said
@@ -52,6 +87,21 @@ namespace Assets.Scripts {
             }
         
         }
+    }
+    
+    [System.Serializable]
+    public enum GameState {
+        MainMenu,
+        Player1,
+        Player2,
+        EndScreen
+    }
+
+    [System.Serializable]
+    public enum TicTacShape {
+        Empty,
+        Cross,
+        Circle
     }
 }
 
